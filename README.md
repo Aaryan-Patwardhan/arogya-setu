@@ -2,14 +2,15 @@
 ### Multilingual Voice-First Health Triage & District Hospital Locator
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_App-059669.svg?logo=vercel&logoColor=white)](https://arogya-setu-nu.vercel.app)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/Frontend-React_18-61DAFB.svg?logo=react&logoColor=black)](https://react.dev)
 [![Gemini](https://img.shields.io/badge/AI-Google_Gemini_Flash-8E75B2.svg?logo=google&logoColor=white)](https://aistudio.google.com)
-[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black.svg?logo=vercel&logoColor=white)](https://vercel.com/new/clone?repository-url=https://github.com/Aaryan-Patwardhan/arogya-setu)
 [![TailwindCSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
 **ArogyaSetu** is an AI-powered, voice-first medical triage and hospital locator engineered specifically for district-level healthcare access. Designed for accessibility across urban and rural demographics, it communicates naturally in **English**, **Hindi (हिंदी)**, and **Marathi (मराठी)**.
 
+> 🌐 **Live Web UI:** If you want to experience the live working web UI, check it out here: **[https://arogya-setu-nu.vercel.app](https://arogya-setu-nu.vercel.app)**  
 > **Prototype Demo District:** Currently configured for **Latur District**, Maharashtra. Designed with a modular architecture so any district can be deployed by adding its dataset.
 
 ---
@@ -156,27 +157,6 @@ arogya-setu/
    npm run dev
    ```
    Open your browser at `http://localhost:5173`.
-
----
-
-### 3. Continuous Deployment on Vercel (Auto-Deploy on Git Push)
-
-The repository includes a root [`vercel.json`](vercel.json) configured for zero-configuration, automated builds.
-
-#### Connecting your GitHub repository to Vercel:
-1. Log in to [Vercel](https://vercel.com).
-2. Click **"Add New Project"** and select **"Import Git Repository"**.
-3. Choose `Aaryan-Patwardhan/arogya-setu`.
-4. Vercel automatically detects the Vite framework and root `vercel.json`:
-   - **Framework Preset:** Vite
-   - **Build Command:** `cd frontend && npm run build`
-   - **Output Directory:** `frontend/dist`
-5. *(Optional)* If your backend is hosted online (e.g. on Render, Railway, or Fly.io), add an environment variable in Vercel:
-   - Key: `VITE_API_URL`
-   - Value: `https://your-backend-url.com`
-6. Click **Deploy**.
-
-> **Automatic Sync:** Every time you run `git push origin main`, Vercel immediately triggers a fresh build and updates the live site in seconds with zero extra manual steps!
 
 ---
 
