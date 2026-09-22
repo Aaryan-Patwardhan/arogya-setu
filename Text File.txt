@@ -1,0 +1,105 @@
+# MISSION & ROLE
+You are an expert full-stack engineer and AI architect tasked with building a production-ready, lightweight hackathon MVP called "ArogyaSetu" (Multilingual Voice-First Health & Hospital Locator).
+
+Build this system completely from scratch with a clean, cohesive structure:
+- **Backend:** FastAPI (Python 3.10+)
+- **Frontend:** Lightweight React (Vite + Tailwind CSS + Lucide Icons)
+- **AI Engine:** Google Gemini Flash API via `@google/genai` or `google-generativeai`
+- **Data Source:** Static mock database for Latur, Maharashtra (`latur_hospitals.json`)
+- **Speech & Location:** Native Web Speech API (STT & TTS) + Browser HTML5 Geolocation API
+
+---
+
+## 1. PROJECT STRUCTURE
+Generate and implement the complete project with this directory layout:
+
+```text
+arogya-latur/
+├── backend/
+│   ├── main.py                  # FastAPI server with CORS, endpoints, and error handling
+│   ├── triage.py                # Gemini Flash prompt orchestration & emergency detector
+│   ├── geo.py                   # Haversine distance calculator & hospital matcher
+│   ├── latur_hospitals.json     # Mock hospital database (Latur coordinates & capabilities)
+│   └── requirements.txt         # Minimal backend dependencies
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── index.html
+│   └── src/
+│       ├── App.jsx              # Main dashboard with voice input, chat, & hospital view
+│       ├── components/
+│       │   ├── VoiceController.jsx # Mic toggle & audio wave visualizer
+│       │   ├── ChatWindow.jsx      # Message thread with speech-playback controls
+│       │   ├── HospitalCard.jsx    # Hospital details, distance, phone, & maps route
+│       │   └── EmergencyBanner.jsx # Critical SOS banner with 108/112 quick-dial
+│       ├── services/
+│       │   ├── speech.js        # Web Speech API wrapper for en-IN, hi-IN, mr-IN
+│       │   └── api.js           # Axios/Fetch API client to FastAPI
+│       └── main.jsx
+└── README.md
+
+2. BACKEND SPECIFICATIONS (FastAPI)
+A. Requirements (backend/requirements.txt)
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.0
+google-generativeai>=0.4.0
+python-dotenv>=1.0.1
+
+B. Mock Hospital Database (backend/latur_hospitals.json)
+Create realistic hospital entries around Latur with coordinates:
+ * Vilasrao Deshmukh Government Medical College (VDGMCH): Lat 18.4088, Lon 76.5843. Departments: Emergency, Trauma, General Medicine, Pediatrics, Orthopedics, COVID/Infectious. Free/Govt.
+ * Ashwini Hospital & Critical Care Center: Lat 18.3975, Lon 76.5710. Departments: Cardiology, ICU, Neurology, Emergency.
+ * Apex Superspeciality Hospital: Lat 18.4022, Lon 76.5684. Departments: Nephrology, Urology, Dialysis, General Surgery.
+ * Mauli Accident & Orthopedic Hospital: Lat 18.4110, Lon 76.5780. Departments: Orthopedics, Joint Replacement, Trauma.
+ * Dr. Bhalke Maternity & Child Hospital: Lat 18.4050, Lon 76.5740. Departments: Obstetrics, Gynecology, Pediatrics, Neonatal Care.
+Each entry must contain: id, name, name_mr, name_hi, lat, lon, address, phone, emergency_24x7 (bool), available_treatments (array of tags), and estimated_cost_tier ("Low/Govt", "Medium", "High").
+C. Geo & Haversine Distance (backend/geo.py)
+Implement the Haversine formula to compute the distance in kilometers between the user's coordinates (user_lat, user_lon) and each hospital in Latur:
+ * Function: find_nearest_hospitals(user_lat, user_lon, required_specialty=None, limit=3)
+ * If user coordinates are outside Latur or null, default fallback origin to Latur City Center (18.4088, 76.5604).
+ * Filter hospitals based on whether required_specialty matches any entry in available_treatments (or return nearest general emergency facilities if no specific specialty is required).
+D. Triage & Gemini Integration (backend/triage.py)
+Implement an asynchronous function process_medical_query(user_query: str, language: str):
+ * Rule-Based Emergency Guardrail: First, perform a fast regex check for emergency keywords in English, Hindi, and Marathi (e.g., chest pain / छातीत दुखणे / सीने में दर्द, severe bleeding / रक्तस्त्राव / खून बहना, unconscious / बेशुद्ध / बेहोश). If triggered, instantly flag is_emergency: True.
+ * Gemini Flash Structured Triage:
+   * Prompt Gemini Flash to act as an empathetic triage assistant.
+   * Output strict JSON with:
+     * analysis: Concise, empathetic explanation of possible non-definitive causes (never give definitive medical diagnoses or prescription drug dosages).
+     * urgency: "EMERGENCY", "CONSULT_TODAY", or "HOME_CARE".
+     * specialty_needed: One matching department tag from our database (e.g., "Cardiology", "Orthopedics", "General Medicine", "Pediatrics").
+     * recommended_action: What the patient should do right now in simple steps.
+     * response_text: Localized conversational response in the requested language (mr, hi, or en).
+     * disclaimer: Standard clinical disclaimer that this is an AI tool and not a doctor.
+E. API Endpoints (backend/main.py)
+ * POST /api/chat: Accepts { message: str, language: "en"|"hi"|"mr", lat: float, lon: float }. Runs triage, queries geo.py for matching hospitals, and returns the combined triage analysis, localized text, and ordered list of nearest relevant hospitals.
+ * GET /api/hospitals: Returns the raw list of all hospitals with filtering by specialty.
+ * GET /api/health: Healthcheck endpoint.
+3. FRONTEND SPECIFICATIONS (Vite + React + Tailwind)
+A. Core Features & UX
+ * Language Switcher: Sticky toggle button group in the header: English | हिंदी | मराठी. Switching languages updates the UI labels, STT recognition model, and TTS voice output.
+ * Voice-First Input (Web Speech API):
+   * Microphone button with recording state animation (pulsing ring).
+   * Listens via webkitSpeechRecognition or SpeechRecognition set to lang: en-IN, hi-IN, or mr-IN.
+   * Automatically submits the transcribed text to the backend upon silence detection.
+ * Audio Output (Text-to-Speech):
+   * "Listen" button on assistant messages that speaks the localized response using browser window.speechSynthesis with language matching mr-IN, hi-IN, or en-IN.
+ * Geolocation Consent:
+   * On first load, request user coordinates via navigator.geolocation.getCurrentPosition.
+   * Display a location badge: "📍 Using Current Location" or "📍 Fallback: Latur Central".
+ * Hospital Result Cards (HospitalCard.jsx):
+   * Show Hospital Name, Distance in km (e.g., 1.8 km away), Contact Number with a click-to-call link (tel:...), and a direct "Navigate" link (https://www.google.com/maps/dir/?api=1&destination=LAT,LON).
+   * Highlight tags matching the patient's issue (e.g., "ICU Available", "Emergency 24x7").
+ * Emergency Alert Banner (EmergencyBanner.jsx):
+   * If is_emergency: true, show a high-contrast red banner at the top:
+     * "CRITICAL: Potential Emergency Detected" (in the active language).
+     * Big dial buttons for 108 (Ambulance) and 112 (National Emergency).
+B. Styling Guidelines
+ * Clean, clinical, and calming modern design (Tailwind slate/emerald/red color palette).
+ * Fully responsive on both mobile browsers and desktop presentations.
+4. EXECUTION INSTRUCTIONS
+ * Write the full, clean, working code for every single file.
+ * Do not use placeholders, truncated comments, or // TODO blocks.
+ * Configure CORS in backend/main.py to allow * or http://localhost:5173.
+ * Provide the exact commands to run both backend and frontend servers concurrently.

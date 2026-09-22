@@ -1,0 +1,104 @@
+[
+  {
+    "id": "vdgmch-latur",
+    "name": "Vilasrao Deshmukh Government Medical College (VDGMCH)",
+    "name_mr": "विलासराव देशमुख शासकीय वैद्यकीय महाविद्यालय व रुग्णालय",
+    "name_hi": "विलासराव देशमुख राजकीय मेडिकल कॉलेज एवं अस्पताल",
+    "lat": 18.4088,
+    "lon": 76.5843,
+    "address": "PVR Chowk, Subhash Nagar, Latur, Maharashtra 413512",
+    "phone": "+91-2382-250500",
+    "emergency_24x7": true,
+    "available_treatments": [
+      "Emergency",
+      "Trauma",
+      "General Medicine",
+      "Pediatrics",
+      "Orthopedics",
+      "Infectious Diseases",
+      "ICU",
+      "Government Healthcare"
+    ],
+    "estimated_cost_tier": "Low/Govt"
+  },
+  {
+    "id": "ashwini-critical-care",
+    "name": "Ashwini Hospital & Critical Care Center",
+    "name_mr": "अश्विनी हॉस्पिटल आणि क्रिटिकल केअर सेंटर",
+    "name_hi": "अश्विनी अस्पताल और क्रिटिकल केयर सेंटर",
+    "lat": 18.3975,
+    "lon": 76.5710,
+    "address": "Near Shivaji Chowk, Signal Camp, Latur, Maharashtra 413512",
+    "phone": "+91-2382-243222",
+    "emergency_24x7": true,
+    "available_treatments": [
+      "Cardiology",
+      "ICU",
+      "Neurology",
+      "Emergency",
+      "Critical Care",
+      "Cardiac Emergency"
+    ],
+    "estimated_cost_tier": "High"
+  },
+  {
+    "id": "apex-superspeciality",
+    "name": "Apex Superspeciality Hospital",
+    "name_mr": "एपेक्स सुपरस्पेशालिटी हॉस्पिटल",
+    "name_hi": "एपेक्स सुपरस्पेशलिटी अस्पताल",
+    "lat": 18.4022,
+    "lon": 76.5684,
+    "address": "Ausa Road, Behind LIC Office, Latur, Maharashtra 413512",
+    "phone": "+91-2382-221199",
+    "emergency_24x7": true,
+    "available_treatments": [
+      "Nephrology",
+      "Urology",
+      "Dialysis",
+      "General Surgery",
+      "Kidney Care",
+      "Emergency"
+    ],
+    "estimated_cost_tier": "Medium"
+  },
+  {
+    "id": "mauli-accident-hospital",
+    "name": "Mauli Accident & Orthopedic Hospital",
+    "name_mr": "माउली अपघात व अस्थिरोग रुग्णालय",
+    "name_hi": "माउली दुर्घटना एवं आर्थोपेडिक अस्पताल",
+    "lat": 18.4110,
+    "lon": 76.5780,
+    "address": "Ambajogai Road, Near Old RTO, Latur, Maharashtra 413531",
+    "phone": "+91-2382-255566",
+    "emergency_24x7": true,
+    "available_treatments": [
+      "Orthopedics",
+      "Joint Replacement",
+      "Trauma",
+      "Accident Care",
+      "Fracture Management",
+      "Emergency"
+    ],
+    "estimated_cost_tier": "Medium"
+  },
+  {
+    "id": "dr-bhalke-maternity",
+    "name": "Dr. Bhalke Maternity & Child Hospital",
+    "name_mr": "डॉ. भालके प्रसूती व बाल रुग्णालय",
+    "name_hi": "डॉ. भालके प्रसूति एवं बाल अस्पताल",
+    "lat": 18.4050,
+    "lon": 76.5740,
+    "address": "Mitra Nagar, Barshi Road, Latur, Maharashtra 413512",
+    "phone": "+91-2382-244488",
+    "emergency_24x7": false,
+    "available_treatments": [
+      "Obstetrics",
+      "Gynecology",
+      "Pediatrics",
+      "Neonatal Care",
+      "NICU",
+      "Mother & Child Care"
+    ],
+    "estimated_cost_tier": "Medium"
+  }
+]
