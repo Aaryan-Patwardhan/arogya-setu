@@ -7,7 +7,6 @@ from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import uvicorn
 
 from config import (
     PROJECT_NAME,
@@ -121,4 +120,5 @@ async def chat_triage(req: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Internal Triage Error: {str(e)}")
 
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
