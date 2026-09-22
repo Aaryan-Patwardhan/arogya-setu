@@ -143,14 +143,25 @@ async def process_medical_query(user_query: str, language: str = "en") -> Dict[s
         )
 
         response = await model.generate_content_async(prompt)
-        result = json.loads(response.text)
+        raw_text = response.text.strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:]
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:]
+        if raw_text.endswith("```"):
+            raw_text = raw_text[:-3]
+        raw_text = raw_text.strip()
+
+        result = json.loads(raw_text)
 
         # Enforce guardrail safety: if regex detected emergency, lock urgency to EMERGENCY
         if is_emergency_flag:
             result["urgency"] = "EMERGENCY"
             result["specialty_needed"] = result.get("specialty_needed") or "Emergency"
 
-        result["is_emergency"] = (result.get("urgency") == "EMERGENCY") or is_emergency_flag
+        urgency_val = str(result.get("urgency", "")).strip().upper()
+        result["urgency"] = urgency_val
+        result["is_emergency"] = (urgency_val == "EMERGENCY") or is_emergency_flag
         result["disclaimer"] = DISCLAIMERS.get(lang, DISCLAIMERS["en"])
         return result
 

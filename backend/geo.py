@@ -6,7 +6,7 @@ SPDX-FileCopyrightText: 2026 Aaryan Patwardhan
 import json
 import math
 from typing import List, Dict, Any, Optional
-from config import BASE_DIR, get_active_district_config
+from config import BASE_DIR, get_active_district_config, DISTRICT_PROFILES
 
 EARTH_RADIUS_KM = 6371.0
 
@@ -25,7 +25,11 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
 
 def load_hospitals(district_key: Optional[str] = None) -> List[Dict[str, Any]]:
     """Load hospitals dataset for the given or active district."""
-    dist_config = get_active_district_config()
+    if district_key and district_key.lower() in DISTRICT_PROFILES:
+        dist_config = DISTRICT_PROFILES[district_key.lower()]
+    else:
+        dist_config = get_active_district_config()
+
     filename = dist_config.get("data_file", "latur_hospitals.json")
     file_path = BASE_DIR / filename
     
@@ -45,13 +49,18 @@ def find_nearest_hospitals(
     user_lat: Optional[float] = None,
     user_lon: Optional[float] = None,
     required_specialty: Optional[str] = None,
-    limit: int = 3
+    limit: int = 3,
+    district_key: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Find and rank nearest hospitals based on geolocation and clinical specialty.
     Falls back to District City Center if coordinates are missing or out-of-bounds.
     """
-    dist_config = get_active_district_config()
+    if district_key and district_key.lower() in DISTRICT_PROFILES:
+        dist_config = DISTRICT_PROFILES[district_key.lower()]
+    else:
+        dist_config = get_active_district_config()
+
     default_lat = dist_config["center_lat"]
     default_lon = dist_config["center_lon"]
     district_name = dist_config["name"]

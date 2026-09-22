@@ -17,7 +17,7 @@ const HospitalCard = ({ hospital, language = 'en', targetSpecialty = null }) => 
   const navUrl = hospital.navigation_url || `https://www.google.com/maps/dir/?api=1&destination=${hospital.lat},${hospital.lon}`;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 hover:border-emerald-300 shadow-xs hover:shadow-md transition-all duration-200 p-4.5 flex flex-col justify-between">
+    <div className="bg-white rounded-xl border border-slate-200 hover:border-emerald-300 shadow-sm hover:shadow-md transition-all duration-200 p-4 sm:p-5 flex flex-col justify-between">
       <div>
         {/* Top Header: Name, Emergency Badge, Cost Tier */}
         <div className="flex items-start justify-between gap-2 mb-2">
@@ -75,7 +75,7 @@ const HospitalCard = ({ hospital, language = 'en', targetSpecialty = null }) => 
       {/* Action Buttons: Call & Navigate */}
       <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 mt-1">
         <a
-          href={`tel:${hospital.phone}`}
+          href={`tel:${hospital.phone?.replace(/[^0-9+]/g, '') || ''}`}
           className="flex items-center justify-center space-x-1.5 bg-slate-100 hover:bg-slate-200/80 active:bg-slate-200 text-slate-800 text-xs font-semibold py-2 px-3 rounded-lg transition-colors"
         >
           <Phone className="w-3.5 h-3.5 text-emerald-600" />
@@ -85,7 +85,7 @@ const HospitalCard = ({ hospital, language = 'en', targetSpecialty = null }) => 
           href={navUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold py-2 px-3 rounded-lg shadow-xs hover:shadow transition-colors"
+          className="flex items-center justify-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold py-2 px-3 rounded-lg shadow-sm hover:shadow transition-colors"
         >
           <Navigation className="w-3.5 h-3.5" />
           <span>Navigate</span>

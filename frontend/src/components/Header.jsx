@@ -15,7 +15,7 @@ const Header = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         {/* App Title & District Indicator */}
         <div className="flex items-center space-x-3">
@@ -62,7 +62,7 @@ const Header = ({
                   onClick={() => onLangChange(lang.code)}
                   className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                     isActive
-                      ? 'bg-white text-emerald-700 shadow-xs'
+                      ? 'bg-white text-emerald-700 shadow-sm'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >

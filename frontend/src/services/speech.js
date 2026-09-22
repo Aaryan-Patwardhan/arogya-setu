@@ -116,6 +116,14 @@ export class SpeechRecognizer {
   }
 }
 
+let cachedVoices = [];
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  cachedVoices = window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    cachedVoices = window.speechSynthesis.getVoices();
+  };
+}
+
 /**
  * Text-to-Speech synthesis helper with language fallback
  */
@@ -134,9 +142,9 @@ export const speakLocalizedText = (text, language = 'en', onStart, onEnd) => {
   utterance.pitch = 1.0;
 
   // Find best available matching voice
-  const voices = window.speechSynthesis.getVoices();
+  const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
   const matchedVoice = voices.find(
-    (v) => v.lang === targetLocale || v.lang.startsWith(language)
+    (v) => v.lang === targetLocale || v.lang.replace('_', '-').startsWith(language)
   );
   if (matchedVoice) {
     utterance.voice = matchedVoice;

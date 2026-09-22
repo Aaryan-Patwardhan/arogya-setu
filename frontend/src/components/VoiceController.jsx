@@ -74,7 +74,7 @@ const VoiceController = ({
 
         {/* Live transcription preview while speaking */}
         {isListening && interimTranscript && (
-          <p className="mt-2 text-xs italic text-slate-700 bg-white/80 border border-emerald-200 py-1 px-3 rounded-full inline-block shadow-2xs max-w-sm truncate">
+          <p className="mt-2 text-xs italic text-slate-700 bg-white/80 border border-emerald-200 py-1 px-3 rounded-full inline-block shadow-sm max-w-sm truncate">
             "{interimTranscript}"
           </p>
         )}
