@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2026 Aaryan Patwardhan
 """
 
 from typing import Optional, List, Dict, Any
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -83,18 +83,27 @@ async def get_hospitals(
     }
 
 @app.post("/api/chat")
-async def chat_triage(req: ChatRequest):
+async def chat_triage(req: ChatRequest, request: Request):
     """
     Main triage endpoint:
-    - Runs safety regex and Gemini Flash triage
+    - Extracts client IP (including X-Forwarded-For proxy headers)
+    - Runs safety regex, rate limiter, and Gemini Flash triage
     - Finds and ranks nearest specialized hospitals using Haversine calculation
     - Returns structured advice, localized text, and geo-matched facilities
     """
     try:
-        # Step 1: Medical Triage Analysis
+        # Extract client IP for sliding-window rate limiting
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            client_ip = forwarded.split(",")[0].strip()
+        else:
+            client_ip = request.client.host if request.client else "unknown"
+
+        # Step 1: Medical Triage Analysis with Rate Limiting
         triage_result = await process_medical_query(
             user_query=req.message,
-            language=req.language
+            language=req.language,
+            client_ip=client_ip
         )
 
         # Step 2: Geo-location and Hospital Matching

@@ -7,6 +7,7 @@ import json
 import re
 from typing import Dict, Any
 from config import GEMINI_API_KEY
+from limiter import rate_limiter
 
 # Rule-Based Emergency Keywords in English, Marathi, and Hindi
 EMERGENCY_REGEX_PATTERNS = [
@@ -94,12 +95,13 @@ def get_offline_fallback(user_query: str, language: str, is_emergency: bool) -> 
         "disclaimer": DISCLAIMERS[lang]
     }
 
-async def process_medical_query(user_query: str, language: str = "en") -> Dict[str, Any]:
+async def process_medical_query(user_query: str, language: str = "en", client_ip: str = "default") -> Dict[str, Any]:
     """
     Triage user health query:
     1. Fast Regex Emergency Guardrail
-    2. Google Gemini Flash Structured Analysis
-    3. Safe Clinical Output Formatting
+    2. Intelligent Rate Limiter (Protects quota while serving 4-5 concurrent users)
+    3. Google Gemini Flash Structured Analysis
+    4. Safe Clinical Output Formatting
     """
     lang = language.lower() if language in ["en", "hi", "mr"] else "en"
     
@@ -112,7 +114,19 @@ async def process_medical_query(user_query: str, language: str = "en") -> Dict[s
         fallback["note"] = "Running on local safety guardrails. Set GEMINI_API_KEY in backend/.env for generative triage."
         return fallback
 
-    # Step 2: Gemini Flash API Integration
+    # Step 2: Rate Limiter Guard (15 RPM global, 6 RPM per IP)
+    allowed, reason = rate_limiter.check_and_consume(client_ip)
+    if not allowed:
+        traffic_notes = {
+            "en": "⚡ High query volume: instant safe triage provided via local clinical guardrails to eliminate latency.",
+            "hi": "⚡ उच्च ट्रैफ़िक: प्रतीक्षा समय समाप्त करने के लिए त्वरित सुरक्षा ट्राइएज सक्रिय किया गया है।",
+            "mr": "⚡ जास्त मागणी: विलंब टाळण्यासाठी त्वरित क्लिनिकल सुरक्षा ट्रायज मार्गदर्शन दिले आहे."
+        }
+        fallback = get_offline_fallback(user_query, lang, is_emergency_flag)
+        fallback["note"] = traffic_notes.get(lang, traffic_notes["en"])
+        return fallback
+
+    # Step 3: Gemini Flash API Integration
     try:
         import google.generativeai as genai
         genai.configure(api_key=GEMINI_API_KEY)
